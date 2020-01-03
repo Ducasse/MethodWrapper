@@ -1,5 +1,6 @@
 # MethodWrapper
 Method wrappers are simple ways to way to perform simple dynamic analysis.
+Method wrappers were originally designed by John Brant and Don Roberts in VisualWorks. 
 
 For now this repository is just to archive the code found on squeaksource/MethodWrappers. 
 I just took the most recent version named MethodWrapper42.girba.1.mcz from 2012. 
