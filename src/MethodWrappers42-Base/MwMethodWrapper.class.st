@@ -7,14 +7,17 @@ To create a new type of method wrapper, you must create a subclass of MwMethodWr
 
 To use a method wrapper, send the class a #on:inClass: message. This will return a new method wrapper (or nil if this method shouldn't be wrapped). You can then install the method wrapper by sending the #install message and uninstall by sending the #uninstall message.
 
-WARNING: Incorrectly using the wrappers can crash your image, so you should save your image before using them. Most problems occur as a result of installing them on methods that are called either in the #beforeMethod or #afterMethod. (Note: In VisualWorks the #value method in Association (VariableBinding in VW2.5) is automatically called by the VM when you refer to a global, class, or pool variable so you should probably never wrap it. I advise against wrapping primitives also.)
+WARNING: Incorrectly using the wrappers can crash your image, so you should save your image before using them. Most problems occur as a result of installing them on methods that are called either in the #beforeMethod or #afterMethod.
+
+Implementation:
+	The class keeps a dictionary, called protoMethods, of method skeletons. There is one skeleton for 	each number of arguments. 
+	Such skeletons are then copied and filled up with information instead of compiling a method 	
+	from scratch during method wrapper installation.
 
 Class Instance Variables:
-
 	protoMethods		<Dictionary
 								key: SmallInteger
 								value: MwMethodWrapper>
-							Prototype wrappers that are copied when installing new wrappers.
 "
 Class {
 	#name : #MwMethodWrapper,
@@ -69,8 +72,8 @@ MwMethodWrapper class >> canWrap: aSelector inClass: aClass [
 
 { #category : #private }
 MwMethodWrapper class >> checkClassFormat [
-	"Make sure the receiver has the format of a CompiledMethod.  In Squeak, as in
-	 Smalltalk-80 V2, CompiledMethods are special format objects, half pointers, half bytes)."
+	"Make sure the receiver has the format of a CompiledMethod.  In Pharo, as in
+	CompiledMethods are special format objects, half pointers, half bytes."
 
 	self instSpec ~= CompiledMethod instSpec ifTrue:
 		[self setFormat: (self format bitOr: (CompiledMethod instSpec bitShift: 7))].
@@ -78,24 +81,26 @@ MwMethodWrapper class >> checkClassFormat [
 
 { #category : #CHECKS }
 MwMethodWrapper class >> checkClassFormats [
-	"doIt: [self checkClassFormats]"
+	"self checkClassFormats"
 
 	| allFormatsOk |
 	allFormatsOk := true.
 	Smalltalk garbageCollect.
-	Transcript cr.
-	self withAllSubclassesDo: [:each |
-		| formatOk |
-		formatOk := each instSpec = CompiledMethod instSpec.
-		allFormatsOk := allFormatsOk & formatOk.
-		Transcript cr; show: each name, ' -> ', formatOk printString].
-	Transcript cr; show: '=== ALL FORMATS OK -> ', allFormatsOk printString
+	^ String streamContents: [ :str | 
+		self withAllSubclassesDo: [:each |
+			| formatOk |
+			formatOk := each instSpec = CompiledMethod instSpec.
+			allFormatsOk := allFormatsOk & formatOk.
+			str cr.
+			str << each name << ' -> ' << formatOk printString ].
+			str cr.
+	 		str <<'=== ALL FORMATS OK -> ' << allFormatsOk printString].
 ]
 
 { #category : #private }
 MwMethodWrapper class >> codeStringFor: numArgs [
-	^String streamContents:
-		[:s|
+	^ String streamContents:
+		[ :s|
 		numArgs = 0
 			ifTrue: [s nextPutAll: 'value']
 			ifFalse:
@@ -213,15 +218,15 @@ MwMethodWrapper class >> protoMethods [
 
 { #category : #accessing }
 MwMethodWrapper class >> protoMethods: aDictionary [
-
-	protoMethods := aDictionary.
+	"protoMethods is a dictionary containing compiled methods skeletons that can be efficiently cloned."
+	protoMethods := aDictionary
 ]
 
 { #category : #private }
 MwMethodWrapper class >> uninstallAllWrappers [
-	"doIt: [self uninstallAllWrappers]"
+	"self uninstallAllWrappers"
 
-	self allSubInstancesDo: [:inst | inst uninstall].
+	self allSubInstancesDo: [:inst | inst uninstall]
 ]
 
 { #category : #evaluating }
