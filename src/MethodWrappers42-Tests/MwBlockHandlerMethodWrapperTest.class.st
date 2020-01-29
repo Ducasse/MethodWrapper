@@ -13,8 +13,8 @@ MwBlockHandlerMethodWrapperTest >> setUp [
 { #category : #tests }
 MwBlockHandlerMethodWrapperTest >> testClassInstVars [
 
-	self assert: self wrapperClass class instVarNames size = 0.
-	self assert: self wrapperClass classVarNames size = 0.
+	self assert: self wrapperClass class instVarNames size equals: 0.
+	self assert: self wrapperClass classVarNames size equals: 0.
 
 	self assert: self wrapperClass protoMethods ~~ nil.
 	self assert: self wrapperClass protoMethods class == Dictionary.
@@ -67,17 +67,6 @@ MwBlockHandlerMethodWrapperTest >> testNoException [
 ]
 
 { #category : #tests }
-MwBlockHandlerMethodWrapperTest >> testNoProtoInstanceCount [
-
-	| allInstCount protoInstCount |
-
-	Smalltalk garbageCollect.
-	allInstCount := self wrapperClass allInstances size.
-	protoInstCount := self wrapperClass protoMethods size.
-	self assert: (allInstCount - protoInstCount) = 0.
-]
-
-{ #category : #tests }
 MwBlockHandlerMethodWrapperTest >> testOtherException [
 
 	| wrapper instance |
@@ -92,12 +81,6 @@ MwBlockHandlerMethodWrapperTest >> testOtherException [
 	self should: [self result: instance methodWithException] raise: Warning.
 	wrapper uninstall.
 	self assert: self result = 0.
-]
-
-{ #category : #tests }
-MwBlockHandlerMethodWrapperTest >> testTweakClassFormat [
-
-	self assert: (self wrapperClass format bitAnd: 16r200) = 16r200.
 ]
 
 { #category : #private }

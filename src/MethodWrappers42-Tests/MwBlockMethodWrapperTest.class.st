@@ -127,23 +127,6 @@ MwBlockMethodWrapperTest >> testInstallUninstall [
 	self assert: (MwClassA compiledMethodAt: #methodOne) class == CompiledMethod.
 ]
 
-{ #category : #tests }
-MwBlockMethodWrapperTest >> testNoProtoInstanceCount [
-
-	| allInstCount protoInstCount |
-
-	Smalltalk garbageCollect.
-	allInstCount := self wrapperClass allInstances size.
-	protoInstCount := self wrapperClass protoMethods size.
-	self assert: (allInstCount - protoInstCount) = 0.
-]
-
-{ #category : #tests }
-MwBlockMethodWrapperTest >> testTweakClassFormat [
-
-	self assert: (self wrapperClass format bitAnd: 16r200) = 16r200.
-]
-
 { #category : #private }
 MwBlockMethodWrapperTest >> wrapperClass [
 

@@ -24,26 +24,25 @@ Class {
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> clientMethod [
-	"^ <CompiledMethod>"
-
+	"Return the original compiled method that is wrapped by the method wrapper"
 	^ clientMethod
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> clientMethod: aCompiledMethod [
-	^clientMethod := aCompiledMethod
+	clientMethod := aCompiledMethod
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> clientSelector [
-	"^ <Symbol>"
+	"Selector of the wrapped method"
 
 	^ clientSelector
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> clientSelector: aSymbol [
-	^clientSelector := aSymbol
+	clientSelector := aSymbol
 ]
 
 { #category : #accessing }
@@ -55,10 +54,10 @@ MwMethodWrapperInstVars >> definingClass [
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> definingClass: aClass [
-	^definingClass := aClass
+	definingClass := aClass
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 MwMethodWrapperInstVars >> initialize [
 	super initialize.
 	self wasActive: false.
@@ -66,31 +65,28 @@ MwMethodWrapperInstVars >> initialize [
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> wasActive [
-	"^ <Boolean>"
-
-	^wasActive
+	
+	^ wasActive
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> wasActive: aBoolean [
-	^wasActive := aBoolean
+	wasActive := aBoolean
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> wrappedClass [
-	"^ <Class>"
 
 	^ wrappedClass
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> wrappedClass: aClass [
-	^wrappedClass := aClass
+	wrappedClass := aClass
 ]
 
 { #category : #accessing }
 MwMethodWrapperInstVars >> wrappingWrapper [
-	"^ <MwMethodWrapper>"
 
 	^ wrappingWrapper
 ]

@@ -13,7 +13,7 @@ MwTimeMethodWrapperTest >> testAverageTime [
 	wrapper install.
 	instance := MwClassA new.
 	count timesRepeat: [instance methodDelay].
-	self assert: wrapper count = count.
+	self assert: wrapper count equals: count.
 	self assert: (wrapper time / count asFloat) = wrapper averageTime.
 	wrapper uninstall.
 ]
@@ -21,8 +21,8 @@ MwTimeMethodWrapperTest >> testAverageTime [
 { #category : #tests }
 MwTimeMethodWrapperTest >> testClassInstVars [
 
-	self assert: self wrapperClass class instVarNames size = 0.
-	self assert: self wrapperClass classVarNames size = 0.
+	self assert: self wrapperClass class instVarNames size equals: 0.
+	self assert: self wrapperClass classVarNames size equals: 0.
 
 	self assert: self wrapperClass protoMethods ~~ nil.
 	self assert: self wrapperClass protoMethods class == Dictionary.
@@ -35,11 +35,11 @@ MwTimeMethodWrapperTest >> testCounts [
 	wrapper := self wrapperClass on: #methodDelay inClass: MwClassA.
 	wrapper install.
 	instance := MwClassA new.
-	self assert: wrapper count = 0.
+	self assert: wrapper count equals: 0.
 	instance methodDelay.
-	self assert: wrapper count = 1.
+	self assert: wrapper count equals: 1.
 	instance methodDelay.
-	self assert: wrapper count = 2.
+	self assert: wrapper count equals: 2.
 	wrapper uninstall.
 ]
 
@@ -50,26 +50,15 @@ MwTimeMethodWrapperTest >> testCountsAndTimes [
 	wrapper := self wrapperClass on: #methodDelay inClass: MwClassA.
 	wrapper install.
 	instance := MwClassA new.
-	self assert: wrapper count = 0.
-	self assert: wrapper time = 0.
+	self assert: wrapper count equals: 0.
+	self assert: wrapper time equals: 0.
 	instance methodDelay.
-	self assert: wrapper count = 1.
+	self assert: wrapper count equals: 1.
 	self assert: wrapper time > 0.
 	instance methodDelay.
-	self assert: wrapper count = 2.
+	self assert: wrapper count equals: 2.
 	self assert: wrapper time > 0.
 	wrapper uninstall.
-]
-
-{ #category : #tests }
-MwTimeMethodWrapperTest >> testNoProtoInstanceCount [
-
-	| allInstCount protoInstCount |
-
-	Smalltalk garbageCollect.
-	allInstCount := self wrapperClass allInstances size.
-	protoInstCount := self wrapperClass protoMethods size.
-	self assert: (allInstCount - protoInstCount) = 0.
 ]
 
 { #category : #tests }
@@ -79,7 +68,7 @@ MwTimeMethodWrapperTest >> testTimes [
 	wrapper := self wrapperClass on: #methodDelay inClass: MwClassA.
 	wrapper install.
 	instance := MwClassA new.
-	self assert: wrapper time = 0.
+	self assert: wrapper time equals: 0.
 	previousTime := wrapper time.
 	instance methodDelay.
 	self assert: wrapper time > previousTime.
@@ -87,12 +76,6 @@ MwTimeMethodWrapperTest >> testTimes [
 	instance methodDelay.
 	self assert: wrapper time > previousTime.
 	wrapper uninstall.
-]
-
-{ #category : #tests }
-MwTimeMethodWrapperTest >> testTweakClassFormat [
-
-	self assert: (self wrapperClass format bitAnd: 16r200) = 16r200.
 ]
 
 { #category : #private }

@@ -138,13 +138,14 @@ MwMethodWrapper class >> countAllInstances [
 { #category : #private }
 MwMethodWrapper class >> createMethodFor: numArgs [
 	self checkClassFormat.
-	^(Compiler new
-			compile: (self codeStringFor: numArgs)
-			in: self
-			notifying: nil
-			ifFail: [])
-		generate: CompiledMethodTrailer empty
-		using: self
+	^ OpalCompiler new
+		source: (self codeStringFor: numArgs);
+		class: self;
+		requestor: nil;
+		failBlock: [  ];
+		parse
+	"generate: CompiledMethodTrailer empty
+		using: self"
 ]
 
 { #category : #'class initialization' }
@@ -329,7 +330,8 @@ MwMethodWrapper >> methodForDecompile [
 { #category : #private }
 MwMethodWrapper >> methodPosition [
 
-	^ (2 to: self numLiterals + 1) detect: [:i |
+	^ (2 to: self numLiterals + 1) 
+		detect: [:i |
 			| each |
 			each := self realObjectAt: i.
 			each == self class methodWrapperSymbol or: [each == self]]
